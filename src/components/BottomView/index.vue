@@ -50,8 +50,9 @@
             <el-pagination
               background
               class="pagination"
+              :page-size="4"
               layout="prev, pager, next"
-              :total="1000">
+              :total="6">
             </el-pagination>
           </template>
         </el-card>
@@ -67,11 +68,11 @@
               </el-radio-group>
             </div>
           </template>
-          <div class="chart-wrapper">
+          <template>
             <div class="chart-category">
               <v-chart :option="categoryOption"></v-chart>
             </div>
-          </div>
+          </template>
         </el-card>
       </div>
     </div>
@@ -170,11 +171,116 @@
     computed: {
       categoryList () {
         const categoryList = this.tableData.map((item) => {
-          item.index = this.tableData.indexOf(item)
+          item.index = this.tableData.indexOf(item) + 1
           item.clickRate = '98.38%'
           return item
         })
         return categoryList
+      }
+    },
+    mounted () {
+      this.renderPieChart()
+    },
+    methods: {
+      renderPieChart () {
+        const mockData = [
+          {
+            legendname: '粉面粥店',
+            value: 67,
+            percent: '15.40',
+            name: '粉面粥店 | 15.40%',
+            itemStyle: {
+              color: '#e7e702'
+            }
+          },
+          {
+            legendname: '地方菜系',
+            value: 53,
+            percent: '19.34',
+            name: '地方菜系 | 19.34%',
+            itemStyle: {
+              color: '#8d7fec'
+            }
+          },
+          {
+            legendname: '小吃炸串',
+            value: 29,
+            percent: '10.58',
+            name: '小吃炸串 | 10.58%',
+            itemStyle: {
+              color: '#5085f2'
+            }
+          }
+        ]
+        this.categoryOption = {
+          title: [
+            {
+              text: '品类分布',
+              textStyle: {
+                fontSize: 14,
+                color: '#666'
+              },
+              left: 20,
+              top: 20
+            },
+            {
+              text: '累计订单量',
+              subtext: 320,
+              textStyle: {
+                fontSize: 14,
+                color: '#999'
+              },
+              subtextStyle: {
+                fontSize: 28,
+                fontWeight: 600,
+                color: '#333'
+              },
+              textAlign: 'center',
+              left: '34.5%',
+              top: '42.5%'
+            }
+          ],
+          series: [
+            {
+              type: 'pie',
+              data: mockData,
+              label: {
+                show: true,
+                formatter: (item) => {
+                  return `${item.data.legendname} | ${item.data.percent}% `
+                }
+              },
+              center: ['35%', '50%'],
+              radius: ['45%', '60%'],
+              itemStyle: {
+                borderWidth: 4,
+                borderColor: '#fff'
+              }
+            }
+          ],
+          legend: {
+            // 必须数据中存在name字段
+            type: 'scroll',
+            height: 250,
+            orient: 'vertical',
+            right: '10%',
+            top: 'middle'
+
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: (item) => {
+              const text = '标题' + '</br>' + item.marker + item.data.legendname + '</br>' + '数量: ' + item.data.value + '</br>' + '占比: ' + item.data.percent + '%'
+              return text
+            },
+            backgroundColor: '#2e2b2b',
+            padding: 10,
+            extraCssText: 'opacity: 0.8',
+            textStyle: {
+              color: '#fff'
+            }
+          }
+        }
       }
     }
   }
@@ -187,6 +293,7 @@
   .view{
     flex: 1;
     width: 50%;
+    height: 560px;
     box-sizing: border-box;
     &:last-child{
       padding-left: 10px;
@@ -229,6 +336,10 @@
             font-weight: 500;
           }
         }
+        .chart-category{
+          height: 100%;
+          width: 100%;
+        }
 
       }
     }
@@ -248,6 +359,10 @@
       .category-redio{
         margin-right: 10px;
       }
+    }
+    .chart-category{
+      display: flex;
+      height: 440px;
     }
 
   }
