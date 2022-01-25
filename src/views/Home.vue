@@ -8,10 +8,12 @@
 </template>
 
 <script>
+/*eslint-disable*/
   import TopView from '../components/TopView'
   import SalesView from '../components/SalesView'
   import BottomView from '../components/BottomView'
   import MapView from '../components/MapView'
+  import api from '../api'
 export default {
   name: 'Home',
   components: {
@@ -19,6 +21,14 @@ export default {
     SalesView,
     BottomView,
     MapView
+  },
+  mounted () {
+    console.log('执行了')
+    api.wordCloud().then(
+      data => console.log(data)
+    ).catch(
+      err => console.log(err)
+    )
   }
 }
 </script>
